@@ -15,4 +15,3 @@ col_problemas = client.db_cidade_alerta.problemas
 def get_problemas():
     problemas = col_problemas.find()
     return jsonify(problemas)
-
