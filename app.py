@@ -4,7 +4,8 @@ from credentials_file import settings, credentials
 from werkzeug.utils import secure_filename
 import os 
 
-UPLOAD_FOLDER = '/photos'
+
+UPLOAD_FOLDER = 'static/photos'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app = Flask(__name__)
 app.config["MONGO_URI"] = f"mongodb+srv://{credentials['user_mongo']}:{credentials['password_mongo']}@{settings['host']}/{settings['database']}?retryWrites=true&w=majority"
@@ -30,18 +31,32 @@ def get_problemas():
 
 @app.route("/problemas", methods=["POST"])
 def cadastro_problemas():
-    try:
-        data = request.data
+    try: 
         foto = request.files['foto']
         if foto and allowed_foto(foto.filename):
             filename = secure_filename(foto.filename)
             foto.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        data['foto'] = filename
-        if not all(k in data for k in ("rua", "bairro", "problema_tipo","urgencia","problema_descricao","data_inicio")):
+
+        data_dict = {
+            "bairro": request.form.get('bairro'),
+            "rua": request.form.get('rua'),
+            "problema_tipo": request.form.get('problema_tipo'),
+            "urgencia": request.form.get('urgencia'),
+            "problema_descricao": request.form.get('problema_descricao'),
+            "data_inicio": request.form.get('data_inicio'),
+            "foto": filename  # Nome do arquivo da foto
+        }
+
+        if not all(k in data_dict for k in ("bairro", "rua", "problema_tipo", "urgencia", "problema_descricao", "data_inicio", "foto")):
             return jsonify({"erro": "Campos obrigatórios faltando!"}), 400
-        problema_id = mongo.db.problemas.insert_one(data)
-        print(problema_id.inserted_id)
-        return {"_id": str(problema_id.inserted_id)}, 201
+        
+        if isinstance(data_dict, dict):
+            problema_id = mongo.db.problemas.insert_one(data_dict)
+            print(problema_id.inserted_id)
+            return {"_id": str(problema_id.inserted_id)}, 201
+        else:
+            return jsonify({"erro": "Dados inválidos"}), 400
+
     except Exception as e: 
         return {'erro': f'{e}'}
 
