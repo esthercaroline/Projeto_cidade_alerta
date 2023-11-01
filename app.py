@@ -52,7 +52,6 @@ def cadastro_problemas():
         
         if isinstance(data_dict, dict):
             problema_id = mongo.db.problemas.insert_one(data_dict)
-            print(problema_id.inserted_id)
             return {"_id": str(problema_id.inserted_id)}, 201
         else:
             return jsonify({"erro": "Dados inválidos"}), 400
