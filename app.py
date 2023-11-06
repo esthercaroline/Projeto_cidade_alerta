@@ -45,10 +45,12 @@ def cadastro_problemas():
             "problema_descricao": request.form.get('problema_descricao'),
             "data_inicio": request.form.get('data_inicio'),
             "foto": filename,  # Nome do arquivo da foto
-            "status":"Em Análise"
+            "status":"Em Análise",
+            "latitude":request.form.get('latitude'),
+            "longitude":request.form.get('longitude')
         }
 
-        if not all(k in data_dict for k in ("bairro", "rua", "problema_tipo", "urgencia", "problema_descricao", "data_inicio", "foto","status")):
+        if not all(k in data_dict for k in ("bairro", "rua", "problema_tipo", "urgencia", "problema_descricao", "data_inicio", "foto","status","latitude","longitude")):
             return jsonify({"erro": "Campos obrigatórios faltando!"}), 400
         if filename == '':
             return jsonify({"erro": "Foto não enviada!"}), 400
@@ -66,8 +68,8 @@ def cadastro_problemas():
 def get_problemas_filter():
     try:
         filter_ = request.json
-        filter_['_id'] = ObjectId(filter_['_id'])
-        print(filter_)
+        if '_id' in filter_:
+            filter_['_id'] = ObjectId(filter_['_id'])
         projection_ = {}
         problemas = list(mongo.db.problemas.find(filter_, projection_))
         for problema in problemas:
