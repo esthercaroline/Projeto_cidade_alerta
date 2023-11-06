@@ -6,7 +6,7 @@ import os
 
 
 UPLOAD_FOLDER = 'static/photos'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'}
 app = Flask(__name__)
 app.config["MONGO_URI"] = f"mongodb+srv://{credentials['user_mongo']}:{credentials['password_mongo']}@{settings['host']}{settings['database']}?retryWrites=true&w=majority"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -45,10 +45,13 @@ def cadastro_problemas():
             "problema_descricao": request.form.get('problema_descricao'),
             "data_inicio": request.form.get('data_inicio'),
             "foto": filename  # Nome do arquivo da foto
+            
         }
 
         if not all(k in data_dict for k in ("bairro", "rua", "problema_tipo", "urgencia", "problema_descricao", "data_inicio", "foto")):
             return jsonify({"erro": "Campos obrigatórios faltando!"}), 400
+        if filename == '':
+            return jsonify({"erro": "Foto não enviada!"}), 400
         
         if isinstance(data_dict, dict):
             problema_id = mongo.db.problemas.insert_one(data_dict)
