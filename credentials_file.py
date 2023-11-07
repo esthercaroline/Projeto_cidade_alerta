@@ -7,7 +7,6 @@ settings = {
     "host": "cidadealerta.2nltvs3.mongodb.net",
     "database": "db_cidade_alerta",
     "collection": "problemas",
-    "port": "4800"
 }
 
 
