@@ -92,4 +92,4 @@ def update_problema(id):
         return {"erro":str(e)}, 500
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True, port=4800)
+    app.run(debug=True, threaded=True)
