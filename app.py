@@ -16,6 +16,10 @@ def allowed_foto(fotoname):
     return '.' in fotoname and \
            fotoname.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@app.route("/",methods=["GET"])
+def index():
+    return jsonify({"mensagem": "Bem vindo ao Cidade Alerta!"}), 200
+
 # Rotas
 @app.route("/problemas", methods=["GET"])
 def get_problemas():
