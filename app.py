@@ -28,6 +28,8 @@ def get_problemas():
         filter_ = {}
         projection_ = {}
         problemas = list(mongo.db.problemas.find(filter_, projection_))
+        if not problemas:
+            return jsonify({"erro": "Nenhum problema encontrado"}), 404
         for problema in problemas:
             problema["_id"] = str(problema["_id"])
         return {"problemas": problemas}, 200
