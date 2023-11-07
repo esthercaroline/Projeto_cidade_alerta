@@ -43,8 +43,10 @@ def cadastro_problemas():
         if foto and allowed_foto(foto.filename):
             filename = secure_filename(foto.filename)
             foto.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    except Exception as e: 
+        return {'erro': f'{e}'}
 
-
+    try:
         data_dict = {
             "bairro": request.form.get('bairro'),
             "rua": request.form.get('rua'),
@@ -57,11 +59,16 @@ def cadastro_problemas():
             "latitude":request.form.get('latitude'),
             "longitude":request.form.get('longitude')
         }
-
+    except Exception as e: 
+        return {'erro': f'{e}'}
+    try:
         if not all(k in data_dict for k in ("bairro", "rua", "problema_tipo", "urgencia", "problema_descricao", "data_inicio", "foto","status","latitude","longitude")):
             return jsonify({"erro": "Campos obrigatórios faltando!"}), 400
         if filename == '':
             return jsonify({"erro": "Foto não enviada!"}), 400
+    except Exception as e: 
+        return {'erro': f'{e}'}
+    try:
         
         if isinstance(data_dict, dict):
             problema_id = mongo.db.problemas.insert_one(data_dict)
