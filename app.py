@@ -82,10 +82,10 @@ def get_problemas_filter():
 def update_problema(id):
     try:
         filter_ = {"_id": ObjectId(id)}
-        print(filter_)
         data = request.json
-        print(data)
-        mongo.db.problemas.update_one(filter_, {"$set": data})
+        problema = mongo.db.problemas.find_one(filter_)
+        problema['status'] = data['status']
+        mongo.db.problemas.update_one(filter_, {"$set": problema})
         return jsonify({"mensagem": "Problema atualizada com sucesso!"}), 200
     except Exception as e:
         return {"erro":str(e)}, 500
