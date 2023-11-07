@@ -77,19 +77,18 @@ def get_problemas_filter():
         return {"problemas": problemas}, 200
     except Exception as e: 
         return {'erro': f'{e}'}
-    
-@app.route("/problemas/<id:id>", methods=["PUT"])
-def update_problemas(id):
+
+@app.route('/problemas/<id>', methods=['PUT'])
+def update_problema(id):
     try:
+        filter_ = {"_id": ObjectId(id)}
+        print(filter_)
         data = request.json
-        if '_id' in data:
-            data['_id'] = ObjectId(data['_id'])
-        projection_ = {}
-        mongo.db.problemas.update_one({"_id": ObjectId(id)}, {"$set": data})
-        return {"mensagem": "Atualizado com sucesso"}, 200
-    except Exception as e: 
-        return {'erro': f'{e}'}
-        
+        print(data)
+        mongo.db.problemas.update_one(filter_, {"$set": data})
+        return jsonify({"mensagem": "Problema atualizada com sucesso!"}), 200
+    except Exception as e:
+        return {"erro":str(e)}, 500
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True, port=4800)
