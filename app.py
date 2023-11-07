@@ -37,6 +37,7 @@ def cadastro_problemas():
             filename = secure_filename(foto.filename)
             foto.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+
         data_dict = {
             "bairro": request.form.get('bairro'),
             "rua": request.form.get('rua'),
